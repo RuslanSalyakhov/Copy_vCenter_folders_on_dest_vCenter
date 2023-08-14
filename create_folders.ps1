@@ -1,18 +1,27 @@
 SCRIPT 
+
+$source_cluster = "Source cluster name"
+$source_vcenter_server = "Source vCenter url" # For example vcenter.lab.com
+$dest_vcenter_server = "Destination vCenter url"
+
+
+$vcenter_user_name = "vCenter user name"
+$vcenter_user_pass = "vCenter user password"
+
 # Step 1: Connect to the source vCenter server
-Connect-VIServer -Server <source_vcenter_server> -User <username> -Password <password>
+Connect-VIServer -Server $source_vcenter_server -User $vcenter_user_name -Password $vcenter_user_pass -SaveCredentials
 
 # Step 2: Get folder names with prefix 'rsb_CI' for VMs in the specified cluster
-$folders = Get-Cluster -Name <cluster_name> | Get-VM | Where-Object {$_.Folder.Name -like "rsb_CI*"} | Select-Object -ExpandProperty Folder | Select-Object -Unique
+$folders = Get-Cluster -Name $source_cluster | Get-VM | Where-Object {$_.Folder.Name -like "rsb_CI*"} | Select-Object -ExpandProperty Folder | Select-Object -Unique
 
 # Step 3: Disconnect from the source vCenter
-Disconnect-VIServer -Server <source_vcenter_server> -Confirm:$false
+Disconnect-VIServer -Server $source_vcenter_server -Confirm:$false
 
 # Step 4: Connect to the destination vCenter Server
-Connect-VIServer -Server <destination_vcenter_server> -User <username> -Password <password>
+Connect-VIServer -Server $dest_vcenter_server  -User $vcenter_user_name -Password $vcenter_user_pass -SaveCredentials
 
-# Step 5: Get folders names nested into the parent folder with a name "mig_folder"
-$parentFolder = Get-Folder -Name "mig_folder"
+# Step 5: Get folders names nested into the parent folder with a name "RB_MIQ"
+$parentFolder = Get-Folder -Name "RB_MIQ"
 $targetFolders = $parentFolder | Get-Folder
 
 # Step 6: Compare the source and target vCenters folder names and if source folder name were not found in the target folders list create a variable $newFolders to keep track of new folders names we are going to create on the target vCenter
