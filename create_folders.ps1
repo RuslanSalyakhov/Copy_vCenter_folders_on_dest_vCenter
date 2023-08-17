@@ -1,5 +1,3 @@
-SCRIPT 
-
 $source_cluster = "Source cluster name"
 $source_vcenter_server = "Source vCenter url" # For example vcenter.lab.com
 $dest_vcenter_server = "Destination vCenter url"
@@ -7,6 +5,8 @@ $dest_vcenter_server = "Destination vCenter url"
 
 $vcenter_user_name = "vCenter user name"
 $vcenter_user_pass = "vCenter user password"
+
+$logfile = "C:\logs\new_folders.log"
 
 # Step 1: Connect to the source vCenter server
 Connect-VIServer -Server $source_vcenter_server -User $vcenter_user_name -Password $vcenter_user_pass -SaveCredentials
@@ -32,7 +32,7 @@ foreach ($folder in $folders) {
     }
 }
 
-# Step 7: Before create new folders ask to confirm the list of created folders printing Y or N After confirmation use folder names in $newFolders variable to create new folders inside "mig_folder" on destination vCenter.
+# Step 7: Before create new folders confirm the list of created folders. After confirmation use folder names in $newFolders variable to create new folders inside "mig_folder" on destination vCenter.
 if ($newFolders.Count -gt 0) {
     Write-Host "The following new folders will be created on the destination vCenter:"
     Write-Host $newFolders
@@ -48,7 +48,7 @@ if ($newFolders.Count -gt 0) {
 Write-Host "The following new folders were created on the destination vCenter:"
 Write-Host $newFolders
 $log = "New folders created on $(Get-Date):`n$newFolders"
-$log | Out-File -FilePath "C:\logs\new_folders.log" -Append
+$log | Out-File -FilePath $logfile -Append
 
 # Disconnect from the destination vCenter
 Disconnect-VIServer -Server <destination_vcenter_server> -Confirm:$false
