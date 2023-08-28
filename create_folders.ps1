@@ -48,6 +48,7 @@ if ($newFolders.Count -gt 0) {
 Write-Host "The following new folders were created on the destination vCenter:"
 Write-Host $newFolders
 $log = "New folders created on $(Get-Date):`n$newFolders"
+# $log = "New folders created on $(Get-Date):`n$($newFolders -join ', ')"   - For comma separated values in the log output
 $log | Out-File -FilePath $logfile -Append
 
 # Disconnect from the destination vCenter
